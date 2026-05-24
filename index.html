@@ -307,6 +307,8 @@
 
 import { initializeApp }
 from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
+import { getDoc, doc } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
+let gameConfig = null;
 
 import {
   getFirestore,
@@ -337,6 +339,20 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 
 const db = getFirestore(app);
+
+async function loadGameConfig(){
+
+  const snap = await getDoc(
+    doc(db, "config", "game")
+  );
+
+  if(snap.exists()){
+    gameConfig = snap.data();
+  }
+
+}
+
+loadGameConfig();
 
 /* ELEMENTOS */
 
@@ -1277,15 +1293,7 @@ victimContinue.addEventListener(
    RESPOSTAS
 ========================= */
 
-const correctAnswers = [
 
-  `adentrando o poço, vi a criatura. me juntei a eles, mudando sua forma de pensar`,
-
-  `meu nome é elia, aquele que espera, e hades. desse ponto adiante, não sei mais quem eu sou`,
-
-  `aquele que espera irá ouvir os pedidos de ajuda de todos assim como seus gritos de horror`
-
-];
 
 function normalizeText(text){
 
@@ -1299,58 +1307,30 @@ function normalizeText(text){
 
 }
 
-sendAnswer.addEventListener(
-  "click",
-  async () => {
+sendAnswer.addEventListener("click", async () => {
 
-    const answer =
-      normalizeText(
-        detectiveAnswer.value
-      );
+  if(!gameConfig) {
+    alert("Sistema ainda carregando...");
+    return;
+  }
 
-    const answer1 =
-      normalizeText(
-        `adentrando o poço, vi a criatura. me juntei a eles, mudando sua forma de pensar`
-      );
+  const answer =
+    normalizeText(detectiveAnswer.value);
 
-    const answer2 =
-      normalizeText(
-        `meu nome é elia, aquele que espera, e hades. desse ponto adiante, não sei mais quem eu sou`
-      );
+  const answers =
+    gameConfig.answers.map(normalizeText);
 
-    const answer3 =
-      normalizeText(
-        `aquele que espera irá ouvir os pedidos de ajuda de todos assim como seus gritos de horror`
-      );
+  if(answers.includes(answer)){
 
-    if(answer === answer1){
+    alert("RESPOSTA CORRETA");
 
-      alert(
-        "RESPOSTA 1 ESTÁ CORRETA"
-      );
+  }else{
 
-    }else if(answer === answer2){
-
-      alert(
-        "RESPOSTA 2 ESTÁ CORRETA"
-      );
-
-    }else if(answer === answer3){
-
-      alert(
-        "RESPOSTA 3 ESTÁ CORRETA"
-      );
-
-    }else{
-
-      alert(
-        "RESPOSTA ERRADA"
-      );
-
-    }
+    alert("RESPOSTA ERRADA");
 
   }
-);
+
+});
 
 
 
