@@ -192,6 +192,9 @@ document
       mode: "normal"
     }
   );
+  await setDoc(doc(db, "screen", "state"), {
+  investigationStarted: false
+}, { merge: true });
 
   const snapshot =
     await getDocs(
