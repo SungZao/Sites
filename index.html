@@ -997,14 +997,10 @@ voteJean.innerText =
 
       if(votes[name] >= 3){
 
-        await setDoc(
-          doc(db, "screen", "state"),
-          {
-            mode: "winner",
-            winner: name
-          },
-          { merge:true }
-        );
+        await setDoc(doc(db, "screen", "state"), {
+  mode: "winner",
+  investigationStarted: true
+}, { merge: true });
 
       }
 
