@@ -1,0 +1,1400 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>NEXUS</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- LOGIN -->
+
+<section id="login-screen" class="screen active">
+
+  <div class="login-box">
+
+    <h1 class="login-title">
+      IDENTIFICAÇÃO NECESSÁRIA
+    </h1>
+
+    <input
+      type="text"
+      id="nickname-input"
+      placeholder="Digite seu nome"
+      maxlength="16"
+    >
+
+    <button id="enter-btn">
+      ACESSAR SISTEMA
+    </button>
+
+  </div>
+
+</section>
+
+<!-- PLAYER -->
+
+<section id="player-screen" class="screen">
+
+  <div class="background-glow"></div>
+
+  <h1 class="logo">-NEXUS-</h1>
+
+  <div id="messages-container"></div>
+
+  <!-- ESCOLHAS -->
+
+  <div id="choice-container" class="hidden">
+
+    <div class="choice-box">
+
+      <div class="choice" data-id="0">
+        <span>Me tornei o que menos esperava, um experimento</span>
+        <small class="chosen-by"></small>
+      </div>
+
+      <div class="choice" data-id="1">
+        <span>Escondido, uma verdade, que escolheram melhor, que fosse mentira</span>
+        <small class="chosen-by"></small>
+      </div>
+
+      <div class="choice" data-id="2">
+        <span>Meu pai me ensinou a ser forte</span>
+        <small class="chosen-by"></small>
+      </div>
+
+      <div class="choice" data-id="3">
+        <span>Uma estrela, que foi forçada pelo sol a brilhar</span>
+        <small class="chosen-by"></small>
+      </div>
+
+    </div>
+
+  </div>
+
+  <button id="open-file-btn">
+  ABRIR FICHA
+</button>
+
+<div id="file-container" class="hidden">
+
+  <div class="file-card">
+
+    <button id="close-file">
+      FECHAR
+    </button>
+
+    <img
+      id="file-image"
+      src=""
+    >
+
+    <h2 id="file-title"></h2>
+
+    <p id="file-description"></p>
+
+  </div>
+
+</div>
+
+<!-- VOTAÇÃO -->
+
+<div id="vote-container" class="hidden">
+
+  <div class="vote-box">
+
+    <h2>
+      Quem deve ser o jogador a Vítima?
+    </h2>
+
+<div class="vote-option">
+
+  <button class="vote-btn" data-vote="heitor">
+    HEITOR
+  </button>
+
+  <small id="votes-heitor">
+    0 votos
+  </small>
+
+</div>
+
+<div class="vote-option">
+
+  <button class="vote-btn" data-vote="camila">
+    CAMILA
+  </button>
+
+  <small id="votes-camila">
+    0 votos
+  </small>
+
+</div>
+
+<div class="vote-option">
+
+  <button class="vote-btn" data-vote="paulo">
+    PAULO
+  </button>
+
+  <small id="votes-paulo">
+    0 votos
+  </small>
+
+</div>
+
+<div class="vote-option">
+
+  <button class="vote-btn" data-vote="jean">
+    JEAN
+  </button>
+
+  <small id="votes-jean">
+    0 votos
+  </small>
+
+</div>
+
+  </div>
+
+</div>
+
+<!-- ABA FINAL -->
+
+<div id="chosen-screen" class="hidden">
+
+  <div class="chosen-box">
+
+    <h1>
+      VOCÊ FOI ESCOLHIDO
+    </h1>
+
+    <p>
+      Se prepare.
+    </p>
+
+    <button id="chosen-continue">
+      CONTINUAR
+    </button>
+
+  </div>
+
+</div>
+
+<!-- DETETIVES -->
+
+<div id="detective-screen" class="hidden">
+
+  <div class="detective-box">
+
+    <h1>
+      VOCÊ É UM DETETIVE
+    </h1>
+
+    <p>
+      Descubra a verdade antes que seja tarde.
+    </p>
+
+    <button id="detective-continue">
+      CONTINUAR
+    </button>
+
+  </div>
+
+</div>
+
+<!-- VÍTIMA -->
+
+<div id="victim-story-screen" class="hidden">
+
+  <div class="victim-story-box">
+
+    <h1>
+      MEMÓRIA FRAGMENTADA
+    </h1>
+
+    <img
+      id="victim-story-image"
+      src="img/olho.png"
+    >
+
+    <p id="victim-story-text">
+      ...
+    </p>
+
+    <button id="victim-continue">
+      PRÓXIMA MEMÓRIA
+    </button>
+
+  </div>
+
+</div>
+
+<!-- INVESTIGAÇÃO -->
+
+<div id="investigation-screen" class="hidden">
+
+  <div class="investigation-box">
+
+    <h1>
+      INVESTIGAÇÃO
+    </h1>
+
+<br><br>
+
+    <input
+      type="text"
+      id="detective-answer"
+      placeholder="Digite sua resposta"
+    >
+
+    <button id="send-answer">
+      ENVIAR RESPOSTA
+    </button>
+
+  </div>
+
+</div>
+
+<!-- DESCOBERTA -->
+
+<div id="discovery-screen" class="hidden">
+
+  <div class="discovery-box">
+
+
+
+
+
+    <div class="discovery-buttons">
+
+      <button
+        class="discovery-btn"
+        data-answer="sim"
+      >
+        SIM
+      </button>
+
+      <button
+        class="discovery-btn"
+        data-answer="nao"
+      >
+        NÃO
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+  <!-- IMAGE VIEWER -->
+
+  <div id="image-viewer" class="hidden">
+
+    <img id="viewer-image">
+
+    <button id="close-image">
+      RETORNAR
+    </button>
+
+  </div>
+
+</section>
+
+<script type="module">
+
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
+
+import {
+  getFirestore,
+  collection,
+  onSnapshot,
+  query,
+  orderBy,
+  doc,
+  setDoc,
+getDoc,
+addDoc,
+updateDoc,
+increment
+}
+from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
+
+const firebaseConfig = {
+
+  apiKey: "AIzaSyAzq9bDynKKg2hpbidl_8Ngeb1xhaLnix8",
+  authDomain: "hades-998a8.firebaseapp.com",
+  projectId: "hades-998a8",
+  storageBucket: "hades-998a8.firebasestorage.app",
+  messagingSenderId: "665561773765",
+  appId: "1:665561773765:web:799b867bfa43d8b1a322ac"
+
+};
+
+const app = initializeApp(firebaseConfig);
+
+const db = getFirestore(app);
+
+/* ELEMENTOS */
+
+const loginScreen =
+  document.getElementById("login-screen");
+
+const playerScreen =
+  document.getElementById("player-screen");
+
+const enterBtn =
+  document.getElementById("enter-btn");
+
+const nicknameInput =
+  document.getElementById("nickname-input");
+
+const logo =
+  document.querySelector(".logo");
+
+const choiceContainer =
+  document.getElementById("choice-container");
+
+const imageViewer =
+  document.getElementById("image-viewer");
+
+const viewerImage =
+  document.getElementById("viewer-image");
+
+const closeImage =
+  document.getElementById("close-image");
+  const voteContainer =
+  document.getElementById("vote-container");
+
+const chosenScreen =
+  document.getElementById("chosen-screen");
+
+const voteButtons =
+  document.querySelectorAll(".vote-btn");
+
+  const voteHeitor =
+  document.getElementById("votes-heitor");
+
+const voteCamila =
+  document.getElementById("votes-camila");
+
+const votePaulo =
+  document.getElementById("votes-paulo");
+
+const voteJean =
+  document.getElementById("votes-jean");
+const detectiveScreen =
+  document.getElementById("detective-screen");
+
+const detectiveContinue =
+  document.getElementById("detective-continue");
+
+const victimStoryScreen =
+  document.getElementById("victim-story-screen");
+
+const victimStoryText =
+  document.getElementById("victim-story-text");
+
+const victimContinue =
+  document.getElementById("victim-continue");
+
+const investigationScreen =
+  document.getElementById("investigation-screen");
+
+const detectiveAnswer =
+  document.getElementById("detective-answer");
+
+const sendAnswer =
+  document.getElementById("send-answer");
+const discoveryScreen =
+  document.getElementById("discovery-screen");
+
+const discoveryButtons =
+  document.querySelectorAll(".discovery-btn");
+
+/* LOGIN */
+
+let nickname =
+  localStorage.getItem("nickname");
+
+if(nickname){
+
+  loginScreen.classList.remove("active");
+
+  playerScreen.classList.add("active");
+
+  watchPlayer();
+
+}else{
+
+  loginScreen.classList.add("active");
+
+}
+
+enterBtn.addEventListener("click", async () => {
+
+  const value =
+    nicknameInput.value.trim();
+
+  if(value.length < 2) return;
+
+  nickname = value;
+
+  localStorage.setItem(
+    "nickname",
+    nickname
+  );
+
+  await setDoc(
+    doc(db, "players", nickname),
+    {
+      nickname,
+      joinedAt: Date.now()
+    }
+  );
+
+  loginScreen.classList.remove("active");
+
+  playerScreen.classList.add("active");
+
+  watchPlayer();
+
+});
+
+/* MENSAGENS */
+
+const container =
+  document.getElementById("messages-container");
+
+const q = query(
+  collection(db, "messages"),
+  orderBy("timestamp")
+);
+
+onSnapshot(q, (snapshot) => {
+
+  container.innerHTML = "";
+
+  snapshot.forEach((docSnap) => {
+
+    const data =
+      docSnap.data();
+
+    const box =
+      document.createElement("div");
+
+    box.classList.add("message-box");
+
+    box.innerText = data.text;
+
+    container.appendChild(box);
+
+  });
+
+});
+
+/* ESCOLHAS */
+
+const choices =
+  document.querySelectorAll(".choice");
+
+choices.forEach(choice => {
+
+  choice.addEventListener("click", async () => {
+
+    if(!nickname) return;
+
+    const id =
+      choice.dataset.id;
+
+    const text =
+      choice.querySelector("span").innerText;
+
+    await setDoc(
+      doc(db, "players", nickname),
+      {
+        nickname,
+        selectedChoice: id,
+        choice: text
+      },
+      { merge:true }
+    );
+
+  });
+
+});
+
+onSnapshot(
+  collection(db, "players"),
+  (snapshot) => {
+
+    const selectedChoices = [];
+
+    document
+    .querySelectorAll(".choice")
+    .forEach(choice => {
+
+      choice.classList.remove(
+        "selected"
+      );
+
+      choice.classList.remove(
+        "locked"
+      );
+
+      choice.querySelector(
+        ".chosen-by"
+      ).innerText = "";
+
+    });
+
+    snapshot.forEach((docSnap) => {
+
+      const data =
+        docSnap.data();
+
+      if(
+        data.selectedChoice === null ||
+        data.selectedChoice === undefined
+      ) return;
+
+      selectedChoices.push(
+        String(data.selectedChoice)
+      );
+
+      const element =
+        document.querySelector(
+          `.choice[data-id="${data.selectedChoice}"]`
+        );
+
+      if(!element) return;
+
+      element.classList.add(
+        "locked"
+      );
+
+      element.querySelector(
+        ".chosen-by"
+      ).innerText =
+        `Escolhido por: ${data.nickname}`;
+
+      if(data.nickname === nickname){
+
+        element.classList.add(
+          "selected"
+        );
+
+      }
+
+    });
+
+    document
+    .querySelectorAll(".choice")
+    .forEach(choice => {
+
+      const id =
+        choice.dataset.id;
+
+      if(
+        selectedChoices.includes(id) &&
+        !choice.classList.contains("selected")
+      ){
+
+        choice.style.pointerEvents =
+          "none";
+
+        choice.style.opacity =
+          "0.35";
+
+      }else{
+
+        choice.style.pointerEvents =
+          "auto";
+
+        choice.style.opacity =
+          "1";
+
+      }
+
+    });
+
+  }
+);
+
+/* SCREEN STATE */
+
+onSnapshot(
+  doc(db, "screen", "state"),
+  (docSnap) => {
+
+    const data =
+      docSnap.data();
+
+    if(!data) return;
+
+    logo.style.display = "block";
+
+    choiceContainer.classList.add("hidden");
+
+    imageViewer.classList.add("hidden");
+
+    if(data.mode === "choices"){
+
+      logo.style.display = "none";
+
+      choiceContainer.classList.remove("hidden");
+
+    }
+
+    if(data.mode === "image"){
+
+      logo.style.display = "none";
+
+      imageViewer.classList.remove("hidden");
+
+      viewerImage.src =
+        data.image;
+
+    }
+
+  }
+);
+
+/* FECHAR IMAGEM */
+
+closeImage.addEventListener("click", async () => {
+
+  await setDoc(
+    doc(db, "screen", "state"),
+    {
+      mode: "normal"
+    }
+  );
+
+});
+
+function watchPlayer(){
+
+  if(!nickname) return;
+
+  onSnapshot(
+    doc(db, "players", nickname),
+    (docSnap) => {
+
+      if(!docSnap.exists()){
+
+        localStorage.removeItem("nickname");
+
+        nickname = null;
+
+        playerScreen.classList.remove("active");
+
+        loginScreen.classList.add("active");
+
+        nicknameInput.value = "";
+
+        alert(
+          "Coloque outro nome"
+        );
+
+        return;
+
+      }
+
+      const data =
+        docSnap.data();
+
+      if(data.fileId !== undefined){
+
+        openFileBtn.style.display =
+          "block";
+
+      }else{
+
+        openFileBtn.style.display =
+          "none";
+
+      }
+
+    }
+  );
+
+}
+
+
+const files = {
+
+  0: {
+
+    title: "ARQUIVO 01 — Camila",
+
+    image: "IMG/Camila.png",
+
+    description: `
+    A Camila é um assunto em especial.
+    ela veio por vontade própria, e é a única dessa sala que sabe da existência do paranormal.
+    O Chamado de Hades a fez sair da vigília de Hades, e você sabe dos acontecimentos até agora, mas enquanto seguia os passos de Navajo, tentando encontrar os Investigadores da Equipe Genocídio, 
+    ele te encontrou, o homem com a máscara sem face.
+
+    Camila é uma criança curiosa
+
+
+    Você vai ouvir o chamado dele, no meio da sua investigação, afinal, ele quer extrair o melhor de você.
+    Mas isso é um segredo, o homem de cabelo branco, e algemas, não quer que os outros atrapalhem o seu despertar, prove que é a escolhida, e ultrapasse os enigmas para chegar até ele
+
+
+
+    `
+
+  },
+
+  1: {
+
+    title: "ARQUIVO 02 — Paulo Safra",
+
+    image: "IMG/Paulo.png",
+
+    description: `
+    Paulo é filho da incrível celebridade #########, conhecida pelo mundo todo.
+
+    Um acontecimento raro entre as mulheres grávidas, é o Parto do bebê, enquanto sua mãe dorme.
+    O que aconteceria se a mídia soubesse que a mulher perfeita teve um filho, antes do casamento, e pior, com um escravo inútil? Obviamente a mídia receberia de maneira horrível
+    O gordo maldito, do seu acessor, pra variar, entrou " Sem querer " no quarto dela, no meio da noite, provavelmente uma desculpa pra tentar tirar uma casquinha da Celebridade, e viu lá, o sangue, junto do pequeno choro, já fraco, do bebê.
+    Você foi separado da sua mãe, e foi descobrir isso nas poucas visitas que ela fez pra te ver na casa de acolhimento.
+
+    Você é uma criança, seus ideais não passam de histórias sem sentido, o que você tem é conceitos e ideias, e é sua escolha, como jogador, interpretar da forma que quiser os seus gostos
+
+    Você não é uma pessoa gentil, o mundo não foi, por quê devo ser? sempre foi mais fácil o oposto.
+    A Irmã Maria me ofereceu um chá, eu derrubei a xícara no chão, e fui obrigado a limpar.
+    Você juntou os cacos da xícara com você, e tentou re-montar ela secretamente,  falhou, obviamente.
+    As crianças tem medo de mim.    
+    `
+
+  },
+
+  2: {
+
+    title: "ARQUIVO 03 — Jean Russo",
+
+    image: "IMG/Jean.png",
+
+    description: `
+    A Inteligência é um dom passado de geração a geração, e seu pai é o homem mais inteligente do mundo, pra você.
+    Alberto Russo é um dos maiores vigaristas atualmente conhecidos no Brasil, ele viveu boa parte da sua adolescência fraudando cheques, roubando cargos e fingindo identidades.
+    Pra mim, a verdadeira força é o poder de conseguir se dar bem em qualquer situação, e foi isso que ele me ensinou.
+
+    Eu sou só uma das crianças que ele tem pelo mundo, mas por algum motivo, eu estou aqui, com ele, e as outras não, isso me deixa feliz...
+    
+    5 dias atrás, papai me mandou ir até a moça do caixa, falar que eu estava perdido, pra que ele pudesse passar a catraca do ponto de metrô, antes disso, ele sujou meu rosto com terra, tirou meus
+    sapatos, e 5 minutos após ele perguntar os preços da passagem, ele saiu e me pediu pra começar o plano, a moça me pegou pelos braços, e me levou até a gerência.
+
+    4 dias atrás, eu estava dormindo no sofá da Gerente do lugar, um quarto quieto com uma cama, e um papelão onde eu posso me deitar, sem sinais do papai.
+
+    3 dias atrás, um moço com uma roupa estilosa, e uma cartola, escondendo seu rosto, veio, disse meu nome, falou que meu pai conseguiu fugir, e estava a minha espera.
+
+    2 dias... está frio, esse lugar é frio... 
+    `
+
+  },
+
+  3: {
+
+    title: "ARQUIVO 04 — Hector",
+
+    image: "IMG/Hector.png",
+
+    description: `
+    Hector Safra nasceu em uma família perfeita.
+    Casa grande, dinheiro, boa aparência, pais educados.
+    O garoto perfeito.
+    O problema, eram seus pais.
+
+    Os dois sonhavam em ser os maiores boxeadores do mundo, falharam miseravelmente, e decidiram transformar o próprio filho no sonho que nunca conseguiram alcançar.
+    Você treinava todos os dias, Não podia sair. Não podia brincar. Não podia ter amigos.
+    Seus pais amavam mais o sonho, do que você.
+
+    Um dia, essa pressão te consumiu. Você Fugiu
+
+    Sem rumo, sem plano, sem saber viver sozinho.
+    E foi nesse dia, que o homem da máscara sorridente encontrou você.
+    Você não sabia conversar direito com outras crianças.
+    Mas sabia lutar.
+
+    Mesmo preso e sequestrado, a unica coisa que te dá medo, é imaginar a cara dos seus pais ao descobrirem a situação, como se o culpado, fosse você.
+
+    
+    `
+
+  }
+
+};
+
+const openFileBtn =
+  document.getElementById("open-file-btn");
+  openFileBtn.style.display = "none";
+
+const fileContainer =
+  document.getElementById("file-container");
+
+const closeFile =
+  document.getElementById("close-file");
+
+const fileImage =
+  document.getElementById("file-image");
+
+const fileTitle =
+  document.getElementById("file-title");
+
+const fileDescription =
+  document.getElementById("file-description");
+
+openFileBtn.addEventListener(
+  "click",
+  async () => {
+
+    if(!nickname) return;
+
+    const playerSnap =
+      await getDoc(
+        doc(db, "players", nickname)
+      );
+
+    if(!playerSnap.exists()) return;
+
+    const data =
+      playerSnap.data();
+
+    if(
+  data.fileId === undefined ||
+  data.fileId === null
+){
+
+  alert(
+    "ACESSO NEGADO"
+  );
+
+  return;
+
+}
+
+    const file =
+  files[data.fileId];
+
+    if(!file) return;
+
+    fileImage.src =
+      file.image;
+
+    fileTitle.innerText =
+      file.title;
+
+    fileDescription.innerText =
+      file.description;
+
+    fileContainer.classList.remove(
+      "hidden"
+    );
+
+  }
+);
+
+closeFile.addEventListener(
+  "click",
+  () => {
+
+    fileContainer.classList.add(
+      "hidden"
+    );
+
+  }
+);
+
+/* =========================
+   SISTEMA DE VOTAÇÃO
+========================= */
+
+voteButtons.forEach((btn) => {
+
+  btn.addEventListener(
+    "click",
+    async () => {
+
+      if(!nickname) return;
+
+      const vote =
+        btn.dataset.vote;
+
+      const playerRef =
+        doc(db, "players", nickname);
+
+      const playerSnap =
+        await getDoc(playerRef);
+
+      const playerData =
+        playerSnap.data();
+
+      if(playerData.voted) return;
+
+      await updateDoc(
+        playerRef,
+        {
+          voted: true,
+          votedTo: vote
+        }
+      );
+
+      const voteRef =
+        doc(db, "votes", "main");
+
+      await setDoc(
+        voteRef,
+        {
+          [vote]: increment(1)
+        },
+        { merge:true }
+      );
+
+    }
+  );
+
+});
+
+/* OBSERVA VOTAÇÃO */
+
+onSnapshot(
+  doc(db, "votes", "main"),
+  async (docSnap) => {
+
+    if(!docSnap.exists()) return;
+
+    const data =
+      docSnap.data();
+
+    const votes = {
+
+      heitor: data.heitor || 0,
+      camila: data.camila || 0,
+      paulo: data.paulo || 0,
+      jean: data.jean || 0
+
+    };
+    voteHeitor.innerText =
+  `${votes.heitor} votos`;
+
+voteCamila.innerText =
+  `${votes.camila} votos`;
+
+votePaulo.innerText =
+  `${votes.paulo} votos`;
+
+voteJean.innerText =
+  `${votes.jean} votos`;
+
+    for(const name in votes){
+
+      if(votes[name] >= 3){
+
+        await setDoc(
+          doc(db, "screen", "state"),
+          {
+            mode: "winner",
+            winner: name
+          },
+          { merge:true }
+        );
+
+      }
+
+    }
+
+  }
+);
+
+/* TELA DA VOTAÇÃO */
+
+onSnapshot(
+  doc(db, "screen", "state"),
+  async (docSnap) => {
+
+    const data =
+      docSnap.data();
+
+    if(!data) return;
+
+    voteContainer.classList.add(
+      "hidden"
+    );
+
+    chosenScreen.classList.add(
+      "hidden"
+    );
+
+    detectiveScreen.classList.add(
+  "hidden"
+);
+
+victimStoryScreen.classList.add(
+  "hidden"
+);
+
+investigationScreen.classList.add(
+  "hidden"
+);
+discoveryScreen.classList.add(
+  "hidden"
+);
+
+if(data.mode === "discovery"){
+
+  discoveryScreen.classList.remove(
+    "hidden"
+  );
+
+}
+
+    if(data.mode === "vote"){
+
+      voteContainer.classList.remove(
+        "hidden"
+      );
+
+    }
+
+if(data.mode === "winner"){
+
+  voteContainer.classList.add(
+    "hidden"
+  );
+
+  detectiveScreen.classList.add(
+    "hidden"
+  );
+
+  victimStoryScreen.classList.add(
+    "hidden"
+  );
+
+  investigationScreen.classList.add(
+    "hidden"
+  );
+
+  const playerSnap =
+    await getDoc(
+      doc(db, "players", nickname)
+    );
+
+  if(!playerSnap.exists()) return;
+
+  const player =
+    playerSnap.data();
+
+  const fileMap = {
+
+    camila: 0,
+    paulo: 1,
+    jean: 2,
+    heitor: 3
+
+  };
+
+  const correctFile =
+    fileMap[data.winner];
+
+  if(player.fileId === correctFile){
+
+    chosenScreen.classList.remove(
+      "hidden"
+    );
+
+  }else{
+
+    detectiveScreen.classList.remove(
+      "hidden"
+    );
+
+  }
+
+}
+
+  }
+);
+
+/* =========================
+   CONTINUAR DETETIVE
+========================= */
+
+detectiveContinue.addEventListener(
+  "click",
+  () => {
+
+    detectiveScreen.classList.add(
+      "hidden"
+    );
+
+    investigationScreen.classList.remove(
+      "hidden"
+    );
+
+  }
+);
+
+/* =========================
+   CONTINUAR ESCOLHIDO
+========================= */
+
+const chosenContinue =
+  document.getElementById(
+    "chosen-continue"
+  );
+
+chosenContinue.addEventListener(
+  "click",
+  () => {
+
+    chosenScreen.classList.add(
+      "hidden"
+    );
+
+    victimStoryScreen.classList.remove(
+      "hidden"
+    );
+
+    currentMemory = 0;
+    updateVictimMemory();
+
+  }
+);
+
+/* =========================
+   CONTINUAR VÍTIMA
+========================= */
+
+const victimStoryImage =
+  document.getElementById(
+    "victim-story-image"
+  );
+
+const victimMemories = [
+
+  {
+
+    image: "img/poço.jpg",
+
+    text: `
+
+
+
+    Cfgpvtcpfq q rqçq, xk c etkcvwtc.
+
+    Og lwpvgk c gngu, owfcpfq uwc hqtoc fg rgpuct
+
+
+
+    `
+
+  },
+
+  {
+
+  image: "img/perso.jpg",
+
+  text: `
+
+
+
+
+  6 33 88 0 66 666 6 33 0 33 0 333 555 444 2 0 2 7777 88 33 555 33 0 9 88 33 0 33 7777 7 33 777 2 0 33 0 44 2 3 33 7777
+
+  3 33 7777 7777 33 0 7 666 66 8 666 0 2 3 444 2 66 8 33 0 66 666 0 7777 33 444 0 6 2 444 7777 0 7 88 33 66 0 33 88 0 7777 666 88
+
+
+
+
+  `
+
+},
+
+  {
+
+    image: "img/gramo.png",
+
+    text: `
+
+
+
+    f3GQRSgYQAY
+
+
+
+    `
+
+  }
+
+];
+
+let currentMemory = 0;
+
+function updateVictimMemory(){
+
+  const memory =
+    victimMemories[currentMemory];
+
+  victimStoryImage.src =
+    memory.image;
+
+  victimStoryText.innerText =
+    memory.text;
+
+}
+
+victimContinue.addEventListener(
+  "click",
+  () => {
+
+    currentMemory++;
+
+    if(
+  currentMemory >=
+  victimMemories.length
+){
+
+  currentMemory = 0;
+
+}
+
+    updateVictimMemory();
+
+  }
+);
+
+
+
+
+
+
+
+
+/* =========================
+   RESPOSTAS
+========================= */
+
+const correctAnswers = [
+
+  `adentrando o poço, vi a criatura. me juntei a eles, mudando sua forma de pensar`,
+
+  `meu nome é elia, aquele que espera, e hades. desse ponto adiante, não sei mais quem eu sou`,
+
+  `aquele que espera irá ouvir os pedidos de ajuda de todos assim como seus gritos de horror`
+
+];
+
+function normalizeText(text){
+
+  return text
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^\w\s]/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+
+}
+
+sendAnswer.addEventListener(
+  "click",
+  async () => {
+
+    const answer =
+      normalizeText(
+        detectiveAnswer.value
+      );
+
+    const answer1 =
+      normalizeText(
+        `adentrando o poço, vi a criatura. me juntei a eles, mudando sua forma de pensar`
+      );
+
+    const answer2 =
+      normalizeText(
+        `meu nome é elia, aquele que espera, e hades. desse ponto adiante, não sei mais quem eu sou`
+      );
+
+    const answer3 =
+      normalizeText(
+        `aquele que espera irá ouvir os pedidos de ajuda de todos assim como seus gritos de horror`
+      );
+
+    if(answer === answer1){
+
+      alert(
+        "RESPOSTA 1 ESTÁ CORRETA"
+      );
+
+    }else if(answer === answer2){
+
+      alert(
+        "RESPOSTA 2 ESTÁ CORRETA"
+      );
+
+    }else if(answer === answer3){
+
+      alert(
+        "RESPOSTA 3 ESTÁ CORRETA"
+      );
+
+    }else{
+
+      alert(
+        "RESPOSTA ERRADA"
+      );
+
+    }
+
+  }
+);
+
+
+
+
+
+/* =========================
+   DESCOBERTA
+========================= */
+
+discoveryButtons.forEach((btn) => {
+
+  btn.addEventListener(
+    "click",
+    async () => {
+
+      if(!nickname) return;
+
+      const answer =
+        btn.dataset.answer;
+
+      await updateDoc(
+        doc(db, "players", nickname),
+        {
+          discoveryAnswer: answer
+        }
+      );
+
+
+
+    }
+  );
+
+});
+
+
+
+
+
+
+</script>
+
+</body>
+</html>

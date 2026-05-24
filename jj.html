@@ -1,0 +1,505 @@
+<!-- ADMIN.HTML -->
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>HADES ADMIN</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="background-glow"></div>
+
+<div class="admin-panel">
+
+  <h2>PAINEL HADES</h2>
+
+  <textarea
+    id="message"
+    placeholder="Digite uma transmissão..."
+  ></textarea>
+
+  <button id="send">
+    ENVIAR TRANSMISSÃO
+  </button>
+
+  <button id="show-choices">
+    MOSTRAR ESCOLHAS
+  </button>
+
+  <button id="hide-choices">
+    ESCONDER ESCOLHAS
+  </button>
+
+  <button id="show-image-panel">
+    MOSTRAR IMAGEM
+  </button>
+
+  <button id="start-vote">
+  INICIAR VOTAÇÃO
+</button>
+
+<button id="end-investigation">
+  FINALIZAR INVESTIGAÇÃO
+</button>
+<button id="start-discovery">
+  INICIAR DESCOBERTA
+</button>
+
+<button id="reset-discovery">
+  RESETAR DESCOBERTA
+</button>
+
+  <div id="image-panel" class="hidden"></div>
+
+  <div class="player-list">
+
+    <h3>JOGADORES</h3>
+
+    <div id="players-list"></div>
+
+  </div>
+
+  <!-- PAINEL DE FICHAS -->
+
+  <div class="give-file-panel">
+
+    <h3>LIBERAR FICHA</h3>
+
+    <select id="player-select"></select>
+
+    <select id="file-select">
+
+      <option value="0">
+        FICHA 01
+      </option>
+
+      <option value="1">
+        FICHA 02
+      </option>
+
+      <option value="2">
+        FICHA 03
+      </option>
+
+      <option value="3">
+        FICHA 04
+      </option>
+
+    </select>
+
+    <button id="give-file-btn">
+      LIBERAR FICHA
+    </button>
+
+  </div>
+
+</div>
+
+<script type="module">
+
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
+
+import {
+  getFirestore,
+  collection,
+  addDoc,
+  doc,
+  setDoc,
+  onSnapshot,
+  getDocs,
+  deleteDoc,
+  updateDoc
+}
+from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
+
+const firebaseConfig = {
+
+  apiKey: "AIzaSyAzq9bDynKKg2hpbidl_8Ngeb1xhaLnix8",
+  authDomain: "hades-998a8.firebaseapp.com",
+  projectId: "hades-998a8",
+  storageBucket: "hades-998a8.firebasestorage.app",
+  messagingSenderId: "665561773765",
+  appId: "1:665561773765:web:799b867bfa43d8b1a322ac"
+
+};
+
+const app =
+  initializeApp(firebaseConfig);
+
+const db =
+  getFirestore(app);
+
+/* IMAGENS */
+
+const images = [
+
+  "img/olho.png"
+
+];
+
+/* TRANSMISSÕES */
+
+document
+.getElementById("send")
+.addEventListener("click", async () => {
+
+  const textarea =
+    document.getElementById("message");
+
+  const text =
+    textarea.value.trim();
+
+  if(text === "") return;
+
+  await addDoc(
+    collection(db, "messages"),
+    {
+      text,
+      timestamp: Date.now()
+    }
+  );
+
+  textarea.value = "";
+
+});
+
+/* MOSTRAR ESCOLHAS */
+
+document
+.getElementById("show-choices")
+.addEventListener("click", async () => {
+
+  await setDoc(
+    doc(db, "screen", "state"),
+    {
+      mode: "choices"
+    }
+  );
+
+});
+
+/* ESCONDER ESCOLHAS */
+
+document
+.getElementById("hide-choices")
+.addEventListener("click", async () => {
+
+  await setDoc(
+    doc(db, "screen", "state"),
+    {
+      mode: "normal"
+    }
+  );
+
+  const snapshot =
+    await getDocs(
+      collection(db, "players")
+    );
+
+  snapshot.forEach(async (playerDoc) => {
+
+    await setDoc(
+      doc(db, "players", playerDoc.id),
+      {
+        selectedChoice: null,
+        choice: null
+      },
+      { merge:true }
+    );
+
+  });
+
+});
+
+/* IMAGE PANEL */
+
+const imagePanel =
+  document.getElementById("image-panel");
+
+document
+.getElementById("show-image-panel")
+.addEventListener("click", () => {
+
+  imagePanel.classList.toggle("hidden");
+
+});
+
+images.forEach((img) => {
+
+  const image =
+    document.createElement("img");
+
+  image.src = img;
+
+  image.classList.add("admin-image");
+
+  image.addEventListener("click", async () => {
+
+    await setDoc(
+      doc(db, "screen", "state"),
+      {
+        mode: "image",
+        image: img
+      }
+    );
+
+  });
+
+  imagePanel.appendChild(image);
+
+});
+
+/* PLAYERS */
+
+const playersList =
+  document.getElementById("players-list");
+
+onSnapshot(
+  collection(db, "players"),
+  (snapshot) => {
+
+    playersList.innerHTML = "";
+
+    snapshot.forEach((docSnap) => {
+
+      const data =
+        docSnap.data();
+
+      const div =
+        document.createElement("div");
+
+      div.classList.add("player-entry");
+
+      div.innerHTML = `
+
+        <div class="player-header">
+
+          <div>
+            <strong>${data.nickname}</strong>
+            <br>
+            <small>
+              ${data.choice || "Sem escolha"}
+              <br>
+              Descoberta:
+              ${data.discoveryAnswer || "Sem resposta"}
+            </small>
+          </div>
+
+          <button class="kick-btn">
+            EXPULSAR
+          </button>
+
+        </div>
+
+      `;
+
+      const kickBtn =
+        div.querySelector(".kick-btn");
+
+      kickBtn.addEventListener("click", async () => {
+
+        await deleteDoc(
+          doc(db, "players", data.nickname)
+        );
+
+      });
+
+      playersList.appendChild(div);
+
+    });
+
+  }
+);
+
+/* SELECT PLAYERS */
+
+const playerSelect =
+  document.getElementById("player-select");
+
+onSnapshot(
+  collection(db, "players"),
+  (snapshot) => {
+
+    playerSelect.innerHTML = "";
+
+    snapshot.forEach((docSnap) => {
+
+      const data =
+        docSnap.data();
+
+      const option =
+        document.createElement("option");
+
+      option.value =
+        data.nickname;
+
+      option.innerText =
+        data.nickname;
+
+      playerSelect.appendChild(option);
+
+    });
+
+  }
+);
+
+/* LIBERAR FICHA */
+
+const fileSelect =
+  document.getElementById("file-select");
+
+const giveFileBtn =
+  document.getElementById("give-file-btn");
+
+giveFileBtn.addEventListener(
+  "click",
+  async () => {
+
+    const player =
+      playerSelect.value;
+
+    const fileId =
+      Number(fileSelect.value);
+
+    if(!player) return;
+
+    await updateDoc(
+      doc(db, "players", player),
+      {
+        fileId
+      }
+    );
+
+    alert(
+      "FICHA LIBERADA"
+    );
+
+  }
+);
+
+/* =========================
+   INICIAR VOTAÇÃO
+========================= */
+
+document
+.getElementById("start-vote")
+.addEventListener(
+  "click",
+  async () => {
+
+    await setDoc(
+      doc(db, "votes", "main"),
+      {
+        heitor: 0,
+        camila: 0,
+        paulo: 0,
+        jean: 0
+      }
+    );
+
+    await setDoc(
+      doc(db, "screen", "state"),
+      {
+        mode: "vote"
+      },
+      { merge:true }
+    );
+
+    alert(
+      "VOTAÇÃO INICIADA"
+    );
+
+  }
+);
+
+
+/* =========================
+   FINALIZAR INVESTIGAÇÃO
+========================= */
+
+document
+.getElementById("end-investigation")
+.addEventListener(
+  "click",
+  async () => {
+
+    await setDoc(
+      doc(db, "screen", "state"),
+      {
+        mode: "normal"
+      },
+      { merge:true }
+    );
+
+    alert(
+      "INVESTIGAÇÃO FINALIZADA"
+    );
+
+  }
+);
+
+/* =========================
+   INICIAR DESCOBERTA
+========================= */
+
+document
+.getElementById("start-discovery")
+.addEventListener(
+  "click",
+  async () => {
+
+    await setDoc(
+      doc(db, "screen", "state"),
+      {
+        mode: "discovery"
+      },
+      { merge:true }
+    );
+
+    alert(
+      "DESCOBERTA INICIADA"
+    );
+
+  }
+);
+
+/* =========================
+   RESETAR DESCOBERTA
+========================= */
+
+document
+.getElementById("reset-discovery")
+.addEventListener(
+  "click",
+  async () => {
+
+    const snapshot =
+      await getDocs(
+        collection(db, "players")
+      );
+
+    snapshot.forEach(async (playerDoc) => {
+
+      await updateDoc(
+        doc(db, "players", playerDoc.id),
+        {
+          discoveryAnswer: null
+        }
+      );
+
+    });
+
+    alert(
+      "DESCOBERTAS RESETADAS"
+    );
+
+  }
+);
+
+
+</script>
+
+</body>
+</html>
